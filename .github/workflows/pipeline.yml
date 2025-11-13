@@ -27,8 +27,9 @@ jobs:
         run: echo "$COMMIT_MESSAGES"
       - name: check for skip message
         id: skip_check
+        env:
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: |
-          COMMIT_MESSAGES=${{ toJson(github.event.commits.*.message) }}
           if [[ "$COMMIT_MESSAGES" =~ "#skip" ]]; then
             echo "skip=true" >> $GITHUB_OUTPUT
           else
