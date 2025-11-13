@@ -49,7 +49,7 @@ jobs:
         if: ${{ success() }}
         with:
             webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-            content: All tests passed and deployment succesful for the commit ${{ github.event.head_commit.message }}
+            content: All tests passed and deployment succesful
 
       - name: The job has failed
         uses: tsickert/discord-webhook@v7.0.0
