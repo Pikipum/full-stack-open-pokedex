@@ -33,7 +33,7 @@ jobs:
           if [[ "$COMMIT_MESSAGES" =~ "#skip" ]]; then
             echo "skip=true"
           else
-            echo "skip=false"
+            echo "skip=fals!e"
           fi
 
   simple_deployment_pipeline:
