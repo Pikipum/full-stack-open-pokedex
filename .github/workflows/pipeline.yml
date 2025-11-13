@@ -7,38 +7,10 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize]
-    
+  
 jobs:
-  commit_has_skip:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: github context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: commits
-        env:
-          COMMITS: ${{ toJson(github.event.commits) }}
-        run: echo "$COMMITS"
-      - name: commit messages
-        env:
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-        run: echo "$COMMIT_MESSAGES"
-      - name: check for skip message
-        id: skip_check
-        env:
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-        run: |
-          if [[ "$COMMIT_MESSAGES" =~ "#skip" ]]; then
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-
   simple_deployment_pipeline:
-    needs: commit_has_skip
-    if: ${{ needs.commit_has_skip.outputs.skip == 'false' }}
+    if: ${{ !contains(github.event.head_commit.message, '#skip') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
