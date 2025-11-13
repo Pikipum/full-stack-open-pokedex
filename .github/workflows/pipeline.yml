@@ -43,6 +43,23 @@ jobs:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           curl "$deploy_url"
+      
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ success() }}
+        with:
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+            severity: info
+            details: All tests passed and deployment succesful for the commit ${{ github.event.head_commit.message }}
+
+      - name: The job has failed
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ failure() }}
+        with:
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+            severity: info
+            details: Tests have failed for the commit ${{ github.event.head_commit.message }}
+
 
   tag_release:
     needs: [simple_deployment_pipeline]
