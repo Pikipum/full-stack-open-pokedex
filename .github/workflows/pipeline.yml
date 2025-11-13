@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize]
     
 jobs:
-  testing_skip:
+  commit_has_skip:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,12 +31,14 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: |
           if [[ "$COMMIT_MESSAGES" =~ "#skip" ]]; then
-            echo "skip=true"
+            echo "skip=true" >> $GITHUB_OUTPUT
           else
-            echo "skip=fals!e"
+            echo "skip=false" >> $GITHUB_OUTPUT
           fi
 
   simple_deployment_pipeline:
+    needs: commit_has_skip
+    if: ${{ needs.commit_has_skip.outputs.skip == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
